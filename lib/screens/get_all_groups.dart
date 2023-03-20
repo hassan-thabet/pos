@@ -14,7 +14,6 @@ class GetAllGroups extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          height: 100.h,
           width: 100.w,
           child: ListView.separated(
             shrinkWrap: true,
@@ -28,7 +27,7 @@ class GetAllGroups extends StatelessWidget {
             itemBuilder: (context , index) =>
                 GroupListTile(
                   leading: '${index+1}',
-                  title: groups[index]['name'],
+                  title: '${groups[index]['name']} group id is : ${groups[index]['id']}',
                   onDelete: () async {
                     DatabaseHelper().deleteGroup(groups[index]['id']);
                     await DatabaseHelper().getGroups().then((value) {

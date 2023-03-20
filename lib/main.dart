@@ -10,6 +10,7 @@ import 'package:uptime_code/database/database_helper.dart';
 import 'package:uptime_code/screens/add_new_group.dart';
 import 'package:uptime_code/screens/add_new_item.dart';
 import 'package:uptime_code/screens/get_all_groups.dart';
+import 'package:uptime_code/screens/get_all_items.dart';
 import 'package:uptime_code/widgets/custom_card_widget.dart';
 import 'package:window_size/window_size.dart';
 
@@ -75,7 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   CustomCardWidget(
                     title: 'Show all items',
-                    onClick: () {},
+                    onClick: () async{
+                      List<Map> groups = await DatabaseHelper().getGroups();
+                      List<Map> items = await DatabaseHelper().getItems();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: items)));
+                    },
                   ),
                   const SizedBox(
                     width: 20,

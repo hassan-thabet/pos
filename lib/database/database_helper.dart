@@ -43,8 +43,14 @@ class DatabaseHelper {
           'INSERT INTO items(group_id, code, name, price, stock, image) VALUES($groupId , $code , "$name" , $price , $stock , "$image")');
       log('inserted successfully => id : $id1 \n- name : $name \n- code : $code \n- price : $price \n- available $stock in stock \n- image url : $image');
 
-    }
+      }
     );
   }
 
+  Future<List<Map>> getItems() async {
+    return await database.rawQuery('SELECT * FROM items');
+  }
+  void deleteItem(int id) async {
+    await database.rawDelete('DELETE FROM items WHERE id = ?', [id]);
+  }
 }
