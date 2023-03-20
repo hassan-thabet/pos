@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uptime_code/core/extensions.dart';
+import 'package:uptime_code/core/device_size.dart';
 import 'package:uptime_code/database/database_helper.dart';
 import 'package:uptime_code/widgets/group_list_tile.dart';
 class GetAllGroups extends StatelessWidget {
@@ -31,9 +31,10 @@ class GetAllGroups extends StatelessWidget {
                   onDelete: () async {
                     DatabaseHelper().deleteGroup(groups[index]['id']);
                     await DatabaseHelper().getGroups().then((value) {
+
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GetAllGroups(groups: value)));
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('${groups[index]['name']} deleted successfully'))
+                          SnackBar(content: Text('${groups[index]['name']} deleted successfully') , backgroundColor: Colors.red,)
                       );
                     });
                   },

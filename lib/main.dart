@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:uptime_code/core/extensions.dart';
+import 'package:uptime_code/core/device_size.dart';
 import 'package:uptime_code/database/database_helper.dart';
 import 'package:uptime_code/screens/add_new_group.dart';
 import 'package:uptime_code/screens/add_new_item.dart';
@@ -78,8 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     title: 'Show all items',
                     onClick: () async{
                       List<Map> groups = await DatabaseHelper().getGroups();
-                      List<Map> items = await DatabaseHelper().getItems();
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: items)));
+                      await DatabaseHelper().getItems().then((value){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: value)));
+                      });
+
                     },
                   ),
                   const SizedBox(
@@ -107,11 +109,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   CustomCardWidget(
                     title: 'Add New item',
-                    onClick: () {
+                    onClick: () async {
+                      await DatabaseHelper().getGroups().then((value)  {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AddNewItem()));
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) => AddNewItem(groups: value)));
+                      });
                     },
                   ),
                   const SizedBox(

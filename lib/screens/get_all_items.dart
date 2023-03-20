@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uptime_code/core/extensions.dart';
+import 'package:uptime_code/core/device_size.dart';
 import '../database/database_helper.dart';
 
 class GetAllItems extends StatelessWidget {
@@ -79,8 +79,13 @@ class GetAllItems extends StatelessWidget {
                                               onTap: () async {
                                                 DatabaseHelper().deleteItem(groupItems[element]['id']);
                                                 List<Map> groups = await DatabaseHelper().getGroups();
-                                                List<Map> items = await DatabaseHelper().getItems();
-                                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: items)));
+                                                await DatabaseHelper().getItems().then((value) {
+                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: value)));
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(content: Text('${groupItems[element]['name']} deleted successfully') , backgroundColor: Colors.red,)
+                                                  );
+                                                });
+
                                               },
                                               child: const Icon(Icons.delete , color: Colors.red,))
                                       ),

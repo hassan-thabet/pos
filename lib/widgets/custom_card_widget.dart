@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uptime_code/core/extensions.dart';
+import 'package:uptime_code/core/device_size.dart';
 class CustomCardWidget extends StatelessWidget {
   final String title;
   final VoidCallback onClick;

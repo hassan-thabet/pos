@@ -1,10 +1,13 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:uptime_code/database/database_helper.dart';
 
 import '../widgets/custom_text_field.dart';
 class AddNewItem extends StatelessWidget {
-  const AddNewItem({Key? key}) : super(key: key);
+  final List<Map> groups;
+  const AddNewItem({Key? key, required this.groups}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,12 @@ class AddNewItem extends StatelessWidget {
                 children: [
                   CustomTextField(
                     label: 'item name',
+                    isValid: (value){
+                      if (value.isEmpty) {
+                        return 'Enter a valid item name !';
+                      }
+                      return null;
+                    },
                     onSave: (value)
                     {
                       itemName = value!;
@@ -36,6 +45,12 @@ class AddNewItem extends StatelessWidget {
                   ),
                   CustomTextField(
                     label: 'image url',
+                    isValid: (value){
+                      if (value.isEmpty) {
+                        return 'Enter a valid image url !';
+                      }
+                      return null;
+                    },
                     onSave: (value)
                     {
                       imageUrl = value!;
@@ -43,6 +58,12 @@ class AddNewItem extends StatelessWidget {
                   ),
                   CustomTextField(
                     label: 'price',
+                    isValid: (value){
+                      if (value.isEmpty || !RegExp(r"^[0-9]").hasMatch(value)) {
+                        return 'Enter a valid price number!';
+                      }
+                      return null;
+                    },
                     onSave: (value)
                     {
                       price = int.parse(value!);
@@ -50,6 +71,12 @@ class AddNewItem extends StatelessWidget {
                   ),
                   CustomTextField(
                     label: 'code',
+                    isValid: (value){
+                      if (value.isEmpty || !RegExp(r"^[0-9]").hasMatch(value)) {
+                        return 'Enter a valid code number!';
+                      }
+                      return null;
+                    },
                     onSave: (value)
                     {
                       code = int.parse(value!);
@@ -57,23 +84,44 @@ class AddNewItem extends StatelessWidget {
                   ),
                   CustomTextField(
                     label: 'stock',
+                    isValid: (value){
+                      if (value.isEmpty || !RegExp(r"^[0-9]").hasMatch(value)) {
+                        return 'Enter a valid stock number!';
+                      }
+                      return null;
+                    },
                     onSave: (value)
                     {
                       stock = int.parse(value!);
                     },
                   ),
-                  CustomTextField(
-                    label: 'group',
-                    onSave: (value)
-                    {
-                      groupId = int.parse(value!);
+                  DropdownButtonFormField(
+                    hint: const Text('Choose Group'),
+                      items: List.generate(groups.length, (index) => DropdownMenuItem(value: groups[index]['id'],child: Text(groups[index]['name']) ,)),
+                      onChanged: (value){
+                        groupId = int.parse('$value');
+                      },
+                    validator: (value){
+                      if (value == null) {
+                        return 'Select a group please !';
+                      }
+                      return null;
                     },
                   ),
+
                   TextButton(
                     onPressed: ()
                     async {
+                      final isValid = itemFormKey.currentState!.validate();
+                      if (!isValid) {
+                        return;
+                      }
                       itemFormKey.currentState?.save();
                       DatabaseHelper().insertItem(itemName, imageUrl, price, stock, code, groupId);
+                      itemFormKey.currentState?.reset();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('$itemName Added successfully') , backgroundColor: Colors.green[800],)
+                      );
                     },
                     child: const Text('Add New item'),
                   )
