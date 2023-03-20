@@ -19,12 +19,13 @@ void main() {
     setWindowMinSize(const Size(800, 600));
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-  }else if(kIsWeb) {
-    try{databaseFactory = databaseFactoryFfiWeb;}catch(e){log(e.toString());};
-
-    log('run from web');
+  } else if (kIsWeb) {
+    try {
+      databaseFactory = databaseFactoryFfiWeb;
+    } catch (e) {
+      log('error from web $e');
+    }
   }
-  log('OS: ${Platform.operatingSystem}');
   runApp(const MyApp());
 }
 
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     DatabaseHelper().createDatabase();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Center(
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -73,17 +74,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomCardWidget(
-                    title: 'Show all items' ,
-                    onClick: (){},
+                    title: 'Show all items',
+                    onClick: () {},
                   ),
                   const SizedBox(
                     width: 20,
                   ),
                   CustomCardWidget(
-                    title: 'Show all Groups' ,
+                    title: 'Show all Groups',
                     onClick: () async {
                       await DatabaseHelper().getGroups().then((value) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => GetAllGroups(groups: value)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    GetAllGroups(groups: value)));
                       });
                     },
                   ),
@@ -96,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomCardWidget(
-                    title: 'Add New item' ,
+                    title: 'Add New item',
                     onClick: () {
                       Navigator.push(
                           context,
@@ -108,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 20,
                   ),
                   CustomCardWidget(
-                    title: 'Add New group' ,
+                    title: 'Add New group',
                     onClick: () {
                       Navigator.push(
                           context,
