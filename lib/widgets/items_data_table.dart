@@ -10,7 +10,7 @@ class ItemsDatatable extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('$groupName'),
+            Text(groupName),
           ],
         ),
         const SizedBox(height: 20,),
