@@ -53,4 +53,10 @@ class DatabaseHelper {
   void deleteItem(int id) async {
     await database.rawDelete('DELETE FROM items WHERE id = ?', [id]);
   }
+
+  void updateItem(int groupId ,int code ,int price ,int stock ,int id ,String name , String image) async {
+    await database.rawUpdate(
+        'UPDATE items SET group_id = ?, code = ?, name = ?, price = ?, stock = ?, image = ? WHERE id = ?',
+        ["$groupId", "$code", name, price, stock, image, id]);
+  }
 }

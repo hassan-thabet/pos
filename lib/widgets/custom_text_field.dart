@@ -3,7 +3,8 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final Function(String?) onSave;
   final FormFieldValidator isValid;
-  const CustomTextField({Key? key, required this.label, required this.onSave, required this.isValid}) : super(key: key);
+  final String? value;
+  const CustomTextField({Key? key, required this.label, required this.onSave, required this.isValid, this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,8 @@ class CustomTextField extends StatelessWidget {
         cursorColor: Colors.black87,
         cursorWidth: 1,
         onSaved: onSave,
-        validator: isValid
+        validator: isValid,
+        initialValue: value,
       ),
     );
   }

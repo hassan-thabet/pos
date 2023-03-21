@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uptime_code/core/device_size.dart';
+import 'package:uptime_code/screens/update_item.dart';
 import '../database/database_helper.dart';
 
 class GetAllItems extends StatelessWidget {
@@ -48,56 +49,68 @@ class GetAllItems extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: DataTable(
-                              columnSpacing: 20,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                columnSpacing: 20,
 
-                              columns: const [
-                                DataColumn(label: Text('index')),
-                                DataColumn(label: Text('image')),
-                                DataColumn(label: Text('group id')),
-                                DataColumn(label: Text('name')),
-                                DataColumn(label: Text('code')),
-                                DataColumn(label: Text('price')),
-                                DataColumn(label: Text('in stock')),
-                                DataColumn(label: Text('actions')),
-                              ],
+                                columns: const [
+                                  DataColumn(label: Text('index')),
+                                  DataColumn(label: Text('image')),
+                                  DataColumn(label: Text('group id')),
+                                  DataColumn(label: Text('name')),
+                                  DataColumn(label: Text('code')),
+                                  DataColumn(label: Text('price')),
+                                  DataColumn(label: Text('in stock')),
+                                  DataColumn(label: Text('actions')),
+                                ],
 
-                              rows:
-                                List.generate( groupItems.length , (element) => DataRow(cells: [
-                                  DataCell(Text('$element')),
-                                  DataCell(SizedBox(width: 40 , height: 40,child: (CircleAvatar(backgroundImage: NetworkImage(groupItems[element]['image']), radius: 40,)))),
-                                  DataCell(Text('${groupItems[element]['group_id']}')),
-                                  DataCell(Text(groupItems[element]['name'])),
-                                  DataCell(Text('# ${groupItems[element]['name']}')),
-                                  DataCell(Text('${groupItems[element]['price']} EGP')),
-                                  DataCell(Text('${groupItems[element]['stock']}')),
-                                  DataCell(Row(
-                                    children: [
-                                      Padding(
-                                          padding: const EdgeInsets.only(right: 4),
-                                          child:  InkWell(
-                                              onTap: () async {
-                                                DatabaseHelper().deleteItem(groupItems[element]['id']);
-                                                List<Map> groups = await DatabaseHelper().getGroups();
-                                                await DatabaseHelper().getItems().then((value) {
-                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: value)));
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(content: Text('${groupItems[element]['name']} deleted successfully') , backgroundColor: Colors.red,)
-                                                  );
-                                                });
+                                rows:
+                                  List.generate( groupItems.length , (element) => DataRow(cells: [
+                                    DataCell(Text('${element+1}')),
+                                    DataCell(SizedBox(width: 40 , height: 40,child: (CircleAvatar(backgroundImage: NetworkImage(groupItems[element]['image']), radius: 40,)))),
+                                    DataCell(Text('${groupItems[element]['group_id']}')),
+                                    DataCell(Text(groupItems[element]['name'])),
+                                    DataCell(Text('# ${groupItems[element]['code']}')),
+                                    DataCell(Text('${groupItems[element]['price']} EGP')),
+                                    DataCell(Text('${groupItems[element]['stock']}')),
+                                    DataCell(Row(
+                                      children: [
+                                        Padding(
+                                            padding: const EdgeInsets.only(right: 4),
+                                            child:  InkWell(
+                                                onTap: () async {
+                                                  DatabaseHelper().deleteItem(groupItems[element]['id']);
+                                                  List<Map> groups = await DatabaseHelper().getGroups();
+                                                  await DatabaseHelper().getItems().then((value) {
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GetAllItems(groups: groups, items: value)));
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(content: Text('${groupItems[element]['name']} deleted successfully') , backgroundColor: Colors.red,)
+                                                    );
+                                                  });
 
-                                              },
-                                              child: const Icon(Icons.delete , color: Colors.red,))
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.all(4),
-                                          child:  InkWell(onTap: (){},child: const Icon(Icons.settings , color: Colors.blue,))
-                                      )
-                                    ],
-                                  ),),
-                                ]))
+                                                },
+                                                child: const Icon(Icons.delete , color: Colors.red,))
+                                        ),
+                                        Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child:  InkWell(
+                                                onTap: () async
+                                                {
+                                                  await DatabaseHelper().getGroups().then((value){
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                                                        UpdateItem(groups: value, item: groupItems[element])));
+                                                  });
+                                                },
+                                                child: const Icon(Icons.settings , color: Colors.blue,)
+                                            )
+                                        )
+                                      ],
+                                    ),),
+                                  ]))
 
-                                ),
+                                  ),
+                            ),
                           )
                         ],
                       ),
